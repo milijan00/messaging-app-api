@@ -1,5 +1,6 @@
-// this file will contain controller methods and routes which will be exported later on
 const db = require("../config/db");
+const Validator = require("../base/validation");
+const base = require("../base/controller");
 //GET
 const get = (req, res)=>{
 	const sql = "SELECT * FROM roles;";
@@ -10,10 +11,12 @@ const get = (req, res)=>{
 };
 //GET
 const getOne = (req, res)=>{
-	if(!req.params?.id) return res.status(400).json({message: "Role id has to be specified."});
+	if(base.noParam(req, "id")) return res.status(400).json({message: "Role id has to be specified."});
+	
 	const sql = "SELECT * FROM roles where id=?;";
 	db.query(sql, [req.params.id], (err, result)=>{
 		if(err)throw err;
+		if(result.length == 0) return res.sendStatus(404);
 		return res.send(result);
 	});
 };
@@ -21,21 +24,29 @@ const getOne = (req, res)=>{
 // POST
 const create = (req, res)=>{
 	const body = req.body;
-	if(!body.name) return res.status(422).json({message : "Role name has to be specified."});
-
-	const sql = "INSERT INTO role(name) VALUES(?);";
+	if(!body.name ) return res.status(422).json({message : "Role name has to be specified."});
+	Validator.validateName(body.name);
+	if(Validator.result.invalid()){ // false
+		return res.status(422).json(Validator.result.errors);
+	}
+	const sql = "INSERT INTO roles(name) VALUES(?);";
 
 	db.query(sql, [body.name], (err, result)=>{
 		if(err) throw err;
 		return res.sendStatus(201);
-	})
+	});
 };
 // PUT
 const update = (req, res)=>{
-	if(!req.params?.id) return res.status(422).json({message : "Role id has to be specified."});
+	if(base.noParam(req, "id")) return res.status(422).json({message : "Role id has to be specified."});
 	const body = req.body;
 	if(!body.name) return res.status(422).json({message : "Role name has to be specified."});
 
+	Validator.validateName(body.name);
+
+	if(Validator.result.invalid()){
+		return res.status(422).json(Validator.result.errors);
+	}
 	const values = [body.name, req.params.id];
 	const sql = "UPDATE roles SET name=? WHERE id=?;";
 	db.query(sql, values, (err, result)=>{
@@ -46,7 +57,7 @@ const update = (req, res)=>{
 
 //DELETE
 const deleteRecord = (req, res)=>{
-	if(!req.params?.id) return res.status(422).json({message : "Role id has to be specified."});
+	if(base.noParam(req, "id")) return res.status(422).json({message : "Role id has to be specified."});
 	const sql = "DELETE FROM roles WHERE id=?";
 	db.query(sql, req.params.id, (err, result)=>{
 		if(err)throw err;

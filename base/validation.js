@@ -2,7 +2,7 @@
 class Validator{
 	static result = {
 		errors: {},
-		valid : ()=> errors.length == 0
+		invalid : function() { return Object.keys(this.errors).length > 0}
 	}
 
 	static regexes = {
@@ -29,7 +29,7 @@ class Validator{
 	}
 
 	static validateName(value){
-		const invalid =  !value.match(Validator.regexes.name.value);
+		const invalid =  value.match(Validator.regexes.name.value)  == null;
 		if(invalid ){
 			// add error message
 			Validator.result.errors.name = Validator.regexes.name.message;
@@ -37,42 +37,42 @@ class Validator{
 	}
 
 	static validateFirstname(value){
-		const invalid =  !value.match(Validator.regexes.firstnameLastname.value);
+		const invalid =  value.match(Validator.regexes.firstnameLastname.value) == null;
 		if(invalid){
 			Validator.result.errors.firstname = Validator.regexes.firstnameLastname.message;
 		}
 	}
 
 	static validateFirstname(value){
-		const invalid =  !value.match(Validator.regexes.firstnameLastname.value);
+		const invalid =  value.match(Validator.regexes.firstnameLastname.value) == null;
 		if(invalid){
 			Validator.result.errors.lastname = Validator.regexes.firstnameLastname.message;
 		}
 	}
 
 	static validateEmail(value){
-		const invalid = !value.match(Validator.regexes.email.value);
+		const invalid = value.match(Validator.regexes.email.value) == null;
 		if(invalid){
 			Validator.result.errors.email = Validator.regexes.email.message;
 		}
 	}
 
 	static validatePassword(value){
-		const invalid =   !value.match(Validator.regexes.password.value)
+		const invalid =   value.match(Validator.regexes.password.value) == null;
 		if(invalid){
 			Validator.result.errors.password = Validator.regexes.password.message;
 		}
 	}
 	
 	static validatePasswordAgain(value){
-		const invalid =   !value.match(Validator.regexes.password.value)
+		const invalid =   value.match(Validator.regexes.password.value) == null;
 		if(invalid){
 			Validator.result.errors.passwordAgain = Validator.regexes.password.message;
 		}
 	}
 
 	static validatePath(value)	{
-		const invalid =   !value.match(Validator.regexes.path.value)
+		const invalid =   value.match(Validator.regexes.path.value) == null;
 		if(invalid){
 
 		}
@@ -80,6 +80,7 @@ class Validator{
 
 }
 
+module.exports = Validator;
 /**
  * users
  * /users
