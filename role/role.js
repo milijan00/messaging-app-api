@@ -64,4 +64,4 @@ router.post("/", jsonparser, create);
 router.put("/:id", jsonparser,update);
 router.delete("/:id", deleteRecord);
 
-module.export = router;
+module.exports = router;

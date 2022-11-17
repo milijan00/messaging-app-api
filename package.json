@@ -4,7 +4,8 @@
   "description": "Web API which is used for messaging application.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node index.js"
   },
   "author": "Aleksandar Milijanovic",
   "license": "ISC",
