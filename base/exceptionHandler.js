@@ -25,12 +25,12 @@ class UnprocessableEntityError extends Error{
 
 class ErrorHandler{
 	handleError(error, res){
-		if(error instanceof Error.NotFoundError){
+		if(error instanceof NotFoundError){
 			return  res.status(404).json({entity: error.entity, id: error.id});
 		}
 
-		if(error instanceof Error.UnprocessableEntityError){
-			return  res.status(404).json({errors : error.errors});
+		if(error instanceof UnprocessableEntityError){
+			return  res.status(422).json({errors : error.errors});
 		}
 		return res.sendStatus(500);
 	}
@@ -41,4 +41,4 @@ module.exports.Errors = {
 	NotFoundError
 };
 
-module.exports = ErrorHandler;
+module.exports.ErrorHandler = ErrorHandler;
