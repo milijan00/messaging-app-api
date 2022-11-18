@@ -43,7 +43,7 @@ class Validator{
 		}
 	}
 
-	static validateFirstname(value){
+	static validateLastname(value){
 		const invalid =  value.match(Validator.regexes.firstnameLastname.value) == null;
 		if(invalid){
 			Validator.result.errors.lastname = Validator.regexes.firstnameLastname.message;
