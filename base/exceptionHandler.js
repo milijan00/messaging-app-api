@@ -22,6 +22,11 @@ class UnprocessableEntityError extends Error{
 		this.errors = errors;
 	}
 }
+class BadRequestError extends Error{
+	constructor(message){
+		super(message);
+	}
+}
 
 class ErrorHandler{
 	handleError(error, res){
@@ -32,13 +37,18 @@ class ErrorHandler{
 		if(error instanceof UnprocessableEntityError){
 			return  res.status(422).json({errors : error.errors});
 		}
+
+		if(error instanceof BadRequestError){
+			return  res.status(400).json({message : error.message});
+		}
 		return res.sendStatus(500);
 	}
 }
 module.exports.Errors = {
 	InternalServerError,
 	UnprocessableEntityError,
-	NotFoundError
+	NotFoundError,
+	BadRequestError
 };
 
 module.exports.ErrorHandler = ErrorHandler;
