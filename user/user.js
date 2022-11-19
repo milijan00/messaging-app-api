@@ -36,6 +36,7 @@ const getOne = (req, res)=>{
 const create = (req, res)=>{
 	try{
 		const body = req.body;
+		Validator.resetErrors();
 		Validator.validateFirstname(body.firstname);
 		Validator.validateLastname(body.lastname);
 		Validator.validateEmail(body.email);
@@ -77,6 +78,7 @@ const create = (req, res)=>{
 const update = (req, res)=>{
 	try{
 		const body = req.body;
+		Validator.resetErrors();
 		Validator.validateFirstname(body.firstname);
 		Validator.validateLastname(body.lastname);
 		Validator.validateEmail(body.email);

@@ -36,6 +36,7 @@ const create = (req, res)=>{
 	try{
 		const body = req.body;
 		if(!body.name ) throw new Errors.Errors.UnprocessableEntityError({message : "Role name has to be specified."});
+		Validator.resetErrors();
 		Validator.validateName(body.name);
 		if(Validator.result.invalid()){ 
 			throw new Errors.Errors.UnprocessableEntityError(Validator.result.errors);
@@ -56,7 +57,7 @@ const update = (req, res)=>{
 		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({message : "Role id has to be specified."});
 		const body = req.body;
 		if(!body.name) throw new Errors.Errors.UnprocessableEntityError({message : "Role id has to be specified."});
-
+		Validator.resetErrors();
 		Validator.validateName(body.name);
 
 		if(Validator.result.invalid()){
