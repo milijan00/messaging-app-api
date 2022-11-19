@@ -41,6 +41,9 @@ const create = (req, res)=>{
 		Validator.validateEmail(body.email);
 		Validator.validatePassword(body.password);
 		Validator.validatePasswordAgain(body.passwordAgain);
+		if(!body.idCity){
+			Validator.result.errors.city = "City id has to be specified.";
+		}
 		if(body.password != body.passwordAgain){
 			Validator.result.errors.passwordAgain = " Both passwords must match.";
 		}
