@@ -28,6 +28,9 @@ class Validator{
 		}
 	}
 
+	static resetErrors(){
+		Validator.result.errors = {};
+	}
 	static validateName(value){
 		const invalid =  value.match(Validator.regexes.name.value)  == null;
 		if(invalid ){
