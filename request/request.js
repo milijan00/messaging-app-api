@@ -3,11 +3,11 @@ const base = require("../base/controller");
 const Errors = require("../base/exceptionHandler");
 const  handler = new Errors.ErrorHandler();
 
-const getFollowers = (req, res)=>{
+const getRequests = (req, res)=>{
 	try{
 		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({id : "User id has to be specified."});
 
-		const sql = `SELECT * FROM users INNER JOIN followers ON users.id=followers.idUser WHERE idUser=?`;
+		const sql = `SELECT * FROM users INNER JOIN requests ON users.id=requests.idUser WHERE idFollower=?`;
 		db.query(sql, req.params.id, (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();
 			return res.send(result);
@@ -17,11 +17,11 @@ const getFollowers = (req, res)=>{
 	}
 }
 
-const follow = (req, res)=>{
+const sendRequest = (req, res)=>{
 	try{
 		if(base.noParam(req, "idUser")) throw new Errors.Errors.UnprocessableEntityError({id : "User's id has to be specified."});
 		if(base.noParam(req, "idFollower")) throw new Errors.Errors.UnprocessableEntityError({id : "Follower's id has to be specified."});
-		const sql = "INSERT INTO followers(idUser, idFollower) VALUES(?, ?);";
+		const sql = "INSERT INTO requests(idUser, idFollower) VALUES(?, ?);";
 		db.query(sql, [req.params.idUser, req.params.idFollower], (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();
 			return res.sendStatus(201);
@@ -30,11 +30,31 @@ const follow = (req, res)=>{
 		return handler.handleError(err, res);
 	}
 };
-const unfollow = (req, res)=>{
+
+// PUT
+//http://localhost:3000/requests/1/1/true -> accept request
+//http://localhost:3000/requests/1/1/ -> reject request
+const update = (req, res)=>{
+	try{
+		let outcome = false;
+		if(base.noParam(req, "idUser")) throw new Errors.Errors.UnprocessableEntityError({id : "User's id has to be specified."});
+		if(base.noParam(req, "idFollower")) throw new Errors.Errors.UnprocessableEntityError({id : "Follower's id has to be specified."});
+		if(req.params.outcome) outcome = true;
+		const sql = "UPDATE requests SET outcome=? WHERE idUser=? AND idFollower=?;";
+		db.query(sql, [outcome, req.params.idUser, req.params.idFollower], (err, result)=>{
+			if(err) throw new Errors.Errors.InternalServerError();
+			return res.sendStatus(204);
+		});
+	}catch(err){
+		return handler.handleError(err, res);
+	}
+};
+
+const deleteRequest = (req, res)=>{
 	try{
 		if(base.noParam(req, "idUser")) throw new Errors.Errors.UnprocessableEntityError({id : "User's id has to be specified."});
 		if(base.noParam(req, "idFollower")) throw new Errors.Errors.UnprocessableEntityError({id : "Follower's id has to be specified."});
-		const sql = "DELETE FROM followers WHERE idUser=? AND idFollower=?;";
+		const sql = "DELETE FROM requests WHERE idUser=? AND idFollower=?;";
 		db.query(sql, [req.params.idUser, req.params.idFollower], (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();
 			return res.sendStatus(204);
@@ -46,7 +66,8 @@ const unfollow = (req, res)=>{
 
 const express = require("express");
 const router = express.Router();
-router.get("/:id", getFollowers);
-router.post("/:idUser/:idFollower", follow);
-router.delete("/:idUser/:idFollower", unfollow);
+router.get("/:id", getRequests);
+router.post("/:idUser/:idFollower", sendRequest);
+router.delete("/:idUser/:idFollower", deleteRequest);
+router.put("/:idUser/:idFollower/:outcome?", update);
 module.exports = router;
