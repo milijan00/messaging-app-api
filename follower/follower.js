@@ -5,7 +5,7 @@ const  handler = new Errors.ErrorHandler();
 
 const getFollowers = (req, res)=>{
 	try{
-		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({id : "User id has to be specified."});
+		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError({id : "User id has to be specified."});
 
 		const sql = `SELECT * FROM users INNER JOIN followers ON users.id=followers.idUser WHERE idUser=?`;
 		db.query(sql, req.params.id, (err, result)=>{
@@ -32,8 +32,8 @@ const follow = (req, res)=>{
 };
 const unfollow = (req, res)=>{
 	try{
-		if(base.noParam(req, "idUser")) throw new Errors.Errors.UnprocessableEntityError({id : "User's id has to be specified."});
-		if(base.noParam(req, "idFollower")) throw new Errors.Errors.UnprocessableEntityError({id : "Follower's id has to be specified."});
+		if(base.noParam(req, "idUser")) throw new Errors.Errors.BadRequestError({id : "User's id has to be specified."});
+		if(base.noParam(req, "idFollower")) throw new Errors.Errors.BadRequestError({id : "Follower's id has to be specified."});
 		const sql = "DELETE FROM followers WHERE idUser=? AND idFollower=?;";
 		db.query(sql, [req.params.idUser, req.params.idFollower], (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();

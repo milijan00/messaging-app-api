@@ -17,7 +17,7 @@ const get = (req, res)=>{
 };
 //GET
 const getOne = (req, res)=>{
-	if(base.noParam(req, "id")) return res.status(400).json({message: "Role id has to be specified."});
+	if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError( "Role id has to be specified.");
 	
 	const sql = "SELECT * FROM roles where id=?;";
 	db.query(sql, [req.params.id], (err, result)=>{
@@ -54,7 +54,7 @@ const create = (req, res)=>{
 // PUT
 const update = (req, res)=>{
 	try{
-		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({message : "Role id has to be specified."});
+		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError( "Role id has to be specified.");
 		const body = req.body;
 		if(!body.name) throw new Errors.Errors.UnprocessableEntityError({message : "Role id has to be specified."});
 		Validator.resetErrors();
@@ -77,7 +77,7 @@ const update = (req, res)=>{
 //DELETE
 const deleteRecord = (req, res)=>{
 	try{
-		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({message : "Role id has to be specified."});
+		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError({message : "Role id has to be specified."});
 		const sql = "DELETE FROM roles WHERE id=?";
 		db.query(sql, req.params.id, (err, result)=>{
 			if(err)throw new Errors.Errors.InternalServerError();

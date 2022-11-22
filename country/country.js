@@ -20,7 +20,7 @@ const get = (req, res)=>{
 
 const getOne = (req, res)=>{
 	try{
-		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({message : "Country id has to be specified."});
+		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError( "Country id has to be specified.");
 		const sql = "SELECT * FROM countries WHERE id=?";
 		db.query(sql, [req.params.id], (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();
@@ -54,7 +54,7 @@ const create = (req, res)=>{
 
 const update = (req, res)=>{
 	try{
-		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({message : "Country's id must be specified."});
+		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError( "Country's id must be specified.");
 		if(!req.body || !req.body.name) throw new Errors.Errors.UnprocessableEntityError({name : "Country name has to be specified."});
 		const name = req.body.name;
 		Validator.resetErrors();
@@ -74,7 +74,7 @@ const update = (req, res)=>{
 
 const deleteRecord = (req, res)=>{
 	try{
-		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({message : "Country's id must be specified."});
+		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError( "Country's id must be specified.");
 
 
 		const sql = "DELETE FROM  countries  WHERE id=?;";

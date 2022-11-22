@@ -20,7 +20,7 @@ const get =  (req, res)=>{
 //GET
 const getOne = (req, res)=>{
 	try{
-		if(base.noParam(req, "id")) throw new Errors.Errors.UnprocessableEntityError({message : "User id has to be specified."});
+		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError("User id has to be specified.");
 		const sql = "SELECT * FROM users WHERE id=?;";
 
 		db.query(sql,[ req.params.id], (err, result)=>{
@@ -119,7 +119,7 @@ const update = (req, res)=>{
 // DELETE
 const deleteRecord = (req, res)=>{
 	try{
-		if(base.noParam(req, "id"))throw new Errors.Errors.UnprocessableEntityError({message : "User id has to be specified."});
+		if(base.noParam(req, "id"))throw new Errors.Errors.BadRequestError( "User id has to be specified.");
 		const sql = "DELETE FROM users WHERE id =?" ;
 		db.query(sql, req.params.id, (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();
