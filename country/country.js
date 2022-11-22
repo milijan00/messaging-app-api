@@ -4,7 +4,7 @@ const base = require("../base/controller");
 const Errors = require("../base/exceptionHandler");
 const  handler = new Errors.ErrorHandler();
 const jsonparser = require("body-parser").json();
-
+const auth_middleware = require("../middlewares/auth-middleware");
 
 const get = (req, res)=>{
 	try{
@@ -91,7 +91,7 @@ const express = require("express");
 const router = express.Router();
 router.get("/", get);
 router.get("/:id", getOne);
-router.post("/", jsonparser, create);
-router.put("/:id", jsonparser, update);
-router.delete(":id", deleteRecord);
+router.post("/", auth_middleware, jsonparser, create);
+router.put("/:id", auth_middleware, jsonparser, update);
+router.delete(":id", auth_middleware, deleteRecord);
 module.exports = router;

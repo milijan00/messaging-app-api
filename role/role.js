@@ -2,6 +2,7 @@ const db = require("../config/db");
 const Validator = require("../base/validation");
 const base = require("../base/controller");
 const Errors = require("../base/exceptionHandler");
+const auth_middleware = require("../middlewares/auth-middleware");
 //GET
 const  handler = new Errors.ErrorHandler();
 const get = (req, res)=>{
@@ -92,10 +93,10 @@ const express = require("express");
 const router = express.Router();
 const jsonparser = require("body-parser").json();
 
-router.get("/", get);
-router.get("/:id", getOne);
-router.post("/", jsonparser, create);
-router.put("/:id", jsonparser,update);
-router.delete("/:id", deleteRecord);
+router.get("/", auth_middleware, get);
+router.get("/:id", auth_middleware, getOne);
+router.post("/", auth_middleware, jsonparser, create);
+router.put("/:id", auth_middleware, jsonparser,update);
+router.delete("/:id", auth_middleware, deleteRecord);
 
 module.exports = router;

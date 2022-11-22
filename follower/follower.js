@@ -2,6 +2,7 @@ const db = require("../config/db");
 const base = require("../base/controller");
 const Errors = require("../base/exceptionHandler");
 const  handler = new Errors.ErrorHandler();
+const auth_middleware = require("../middlewares/auth-middleware");
 
 const getFollowers = (req, res)=>{
 	try{
@@ -46,7 +47,7 @@ const unfollow = (req, res)=>{
 
 const express = require("express");
 const router = express.Router();
-router.get("/:id", getFollowers);
-router.post("/:idUser/:idFollower", follow);
-router.delete("/:idUser/:idFollower", unfollow);
+router.get("/:id", auth_middleware, getFollowers);
+router.post("/:idUser/:idFollower", auth_middleware, follow);
+router.delete("/:idUser/:idFollower", auth_middleware, unfollow);
 module.exports = router;

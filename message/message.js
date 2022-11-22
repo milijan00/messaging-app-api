@@ -5,7 +5,7 @@ const Errors = require("../base/exceptionHandler");
 const  handler = new Errors.ErrorHandler();
 const bcrypt = require("bcrypt");
 const jsonparser = require("body-parser").json();
-
+const auth_middleware = require("../middlewares/auth-middleware");
 
 const get = (req, res)=>{
     try{
@@ -59,7 +59,7 @@ const deleteRecord = (req, res)=>{
 
 const express = require("express");
 const router = express.Router();
-router.get("/:idSender/:idReceiver", get);
-router.post("/", jsonparser, create);
-router.delete("/:id", deleteRecord);
+router.get("/:idSender/:idReceiver", auth_middleware, get);
+router.post("/", jsonparser, auth_middleware, create);
+router.delete("/:id", auth_middleware, deleteRecord);
 module.exports = router;

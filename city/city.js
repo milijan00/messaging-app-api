@@ -4,6 +4,7 @@ const Errors = require("../base/exceptionHandler");
 const  handler = new Errors.ErrorHandler();
 const jsonparser = require("body-parser").json();
 const Validator = require("../base/validation");
+const auth_middleware = require("../middlewares/auth-middleware");
 
 const get = (req, res)=>{
 	try{
@@ -92,7 +93,7 @@ const deleteRecord = (req, res)=>{
 const express = require("express");
 const router = express.Router();
 router.get("/:idCountry", get);
-router.post("/", jsonparser, create);
-router.put("/:id", jsonparser, update);
-router.delete("/:id", deleteRecord);
+router.post("/", auth_middleware, jsonparser, create);
+router.put("/:id", auth_middleware, jsonparser, update);
+router.delete("/:id", auth_middleware, deleteRecord);
 module.exports = router;

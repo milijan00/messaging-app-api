@@ -2,7 +2,7 @@ const db = require("../config/db");
 const base = require("../base/controller");
 const Errors = require("../base/exceptionHandler");
 const  handler = new Errors.ErrorHandler();
-
+const auth_middleware = require("../middlewares/auth-middleware");
 const getRequests = (req, res)=>{
 	try{
 		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError({id : "User id has to be specified."});
@@ -66,8 +66,8 @@ const deleteRequest = (req, res)=>{
 
 const express = require("express");
 const router = express.Router();
-router.get("/:id", getRequests);
-router.post("/:idUser/:idFollower", sendRequest);
-router.delete("/:idUser/:idFollower", deleteRequest);
-router.put("/:idUser/:idFollower/:outcome?", update);
+router.get("/:id", auth_middleware, getRequests);
+router.post("/:idUser/:idFollower", auth_middleware, sendRequest);
+router.delete("/:idUser/:idFollower", auth_middleware, deleteRequest);
+router.put("/:idUser/:idFollower/:outcome?", auth_middleware, update);
 module.exports = router;
