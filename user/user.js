@@ -34,7 +34,7 @@ const getOne = (req, res)=>{
 }
 //POST
 const create =(req, res)=>{
-	//try{
+	try{
 		const body = req.body;
 		Validator.resetErrors();
 		Validator.validateFirstname(body.firstname);
@@ -52,8 +52,7 @@ const create =(req, res)=>{
 
 		if(Validator.result.invalid()) throw new Errors.Errors.UnprocessableEntityError(Validator.result.errors);
 		db.query("SELECT * FROM cities WHERE id=?", body.idCity, async (err, result)=>{
-			//if(err) throw new Errors.Errors.InternalServerError();
-			if(err) throw err;
+			if(err) throw new Errors.Errors.InternalServerError();
 			if(result.length == 0)	 throw new Errors.Errors.UnprocessableEntityError({idCity: "There is no such city."});
 			const roleId = 2;
 			const sql = "INSERT INTO users(firstname, lastname, email, password, idRole, idCity) VALUES(?, ?, ?, ?, ?, ?);";
@@ -67,15 +66,14 @@ const create =(req, res)=>{
 				Number(body.idCity)
 			];
 			db.query(sql, values, (err, result)=>{
-				//if(err) throw new Errors.Errors.InternalServerError();
-				if(err) throw err;
+				if(err) throw new Errors.Errors.InternalServerError();
 
 				return res.sendStatus(201);
 			})
 		})
-	/*}catch(err){
+	}catch(err){
 		return handler.handleError(err, res);
-	}*/
+	}
 }
 //PATCH -- update later on
 const update = (req, res)=>{
