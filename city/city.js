@@ -8,7 +8,7 @@ const Validator = require("../base/validation");
 const get = (req, res)=>{
 	try{
 		if(base.noParam(req, "idCountry")) throw new Errors.Errors.BadRequestError("Country id has to be specified.");
-		const sql = "SELECT ci.name, ci.id, co.id as countryId,  FROM cities AS ci  INNER JOIN countries AS co ON ci.idCountry=co.id WHERE co.id=?;";
+		const sql = "SELECT * From cities Where idCountry=?;";
 		db.query(sql, [req.params.idCountry], (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();
 			return res.send(result);
@@ -33,7 +33,7 @@ const getOne = (req, res)=>{
 
 const create = (req, res)=>{
 	try{
-		if(!req.body || req.body.name || req.body.idCountry) throw new Errors.Errors.UnprocessableEntityError({name : "City name is required."});
+		if(!req.body || !req.body.name || !req.body.idCountry) throw new Errors.Errors.UnprocessableEntityError({name : "City name is required."});
 		const name =  req.body.name;
 		const idCountry = req.body.idCountry;
 		Validator.resetErrors();
@@ -92,7 +92,6 @@ const deleteRecord = (req, res)=>{
 const express = require("express");
 const router = express.Router();
 router.get("/:idCountry", get);
-router.get("/:id", getOne);
 router.post("/", jsonparser, create);
 router.put("/:id", jsonparser, update);
 router.delete("/:id", deleteRecord);

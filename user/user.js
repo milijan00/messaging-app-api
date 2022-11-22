@@ -33,8 +33,8 @@ const getOne = (req, res)=>{
 	}
 }
 //POST
-const create = (req, res)=>{
-	try{
+const create =(req, res)=>{
+	//try{
 		const body = req.body;
 		Validator.resetErrors();
 		Validator.validateFirstname(body.firstname);
@@ -42,6 +42,7 @@ const create = (req, res)=>{
 		Validator.validateEmail(body.email);
 		Validator.validatePassword(body.password);
 		Validator.validatePasswordAgain(body.passwordAgain);
+
 		if(!body.idCity){
 			Validator.result.errors.city = "City id has to be specified.";
 		}
@@ -50,29 +51,31 @@ const create = (req, res)=>{
 		}
 
 		if(Validator.result.invalid()) throw new Errors.Errors.UnprocessableEntityError(Validator.result.errors);
-		db.query("SELECT * FROM City WHERE id=?", body.idCity, (err, result)=>{
-			if(err) throw new Errors.Errors.InternalServerError();
+		db.query("SELECT * FROM cities WHERE id=?", body.idCity, async (err, result)=>{
+			//if(err) throw new Errors.Errors.InternalServerError();
+			if(err) throw err;
 			if(result.length == 0)	 throw new Errors.Errors.UnprocessableEntityError({idCity: "There is no such city."});
 			const roleId = 2;
 			const sql = "INSERT INTO users(firstname, lastname, email, password, idRole, idCity) VALUES(?, ?, ?, ?, ?, ?);";
-			const hash = bcrypt.hash(body.password, 10);
+			const hash = await bcrypt.hash(body.password, 10);
 			const values = [
 				body.firstname,
 				body.lastname,
 				body.email,
 				hash,
 				roleId,
-				body.idCity
+				Number(body.idCity)
 			];
 			db.query(sql, values, (err, result)=>{
-				if(err) throw new Errors.Errors.InternalServerError();
+				//if(err) throw new Errors.Errors.InternalServerError();
+				if(err) throw err;
 
 				return res.sendStatus(201);
 			})
 		})
-	}catch(err){
+	/*}catch(err){
 		return handler.handleError(err, res);
-	}
+	}*/
 }
 //PATCH -- update later on
 const update = (req, res)=>{
