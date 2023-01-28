@@ -32,20 +32,18 @@ const login = (req, res)=>{
                    if(verified){
                         const accessToken = jwt.sign({
                             id : user.id,
-                            username : user.username,
-                            role : user.role
+                            email : user.email
                         },
                         process.env.ACCESS_TOKEN_SECRET,
-                        {expiresIn : "60s"});
+                        {expiresIn : "24h"});
 
 
                         const refreshToken = jwt.sign({
                             id : user.id,
-                            username : user.username,
-                            role : user.role
+                            email : user.email
                         },
                         process.env.REFRESH_TOKEN_SECRET,
-                        {expiresIn : "60s"});
+                        {expiresIn : "24h"});
                         // store refreshToken inside of a cookie
                         const oneDay = 24 * 60 * 60 * 1000;
 

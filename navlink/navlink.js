@@ -93,7 +93,7 @@ const deleteRecord = (req, res)=>{
 
 const express = require("express");
 const router = express.Router();
-router.get("/", auth_middleware, get);
+router.get("/", get);
 router.get("/:id", auth_middleware, getOne);
 router.post("/", auth_middleware, jsonparser, create);
 router.put("/:id", auth_middleware, jsonparser, update);

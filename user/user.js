@@ -76,7 +76,6 @@ const create =(req, res)=>{
 		return handler.handleError(err, res);
 	}
 }
-//PATCH -- update later on
 const update = (req, res)=>{
 	try{
 		const body = req.body;
@@ -84,32 +83,27 @@ const update = (req, res)=>{
 		Validator.validateFirstname(body.firstname);
 		Validator.validateLastname(body.lastname);
 		Validator.validateEmail(body.email);
+		if(body.password){
 		Validator.validatePassword(body.password);
-		Validator.validatePasswordAgain(body.passwordAgain);
-		if(body.password != body.passwordAgain){
-			Validator.result.errors.passwordAgain = " Both passwords must match.";
 		}
-
+		// Validator.validatePasswordAgain(body.passwordAgain);
+		// if(body.password != body.passwordAgain){
+		// 	Validator.result.errors.passwordAgain = " Both passwords must match.";
+		// }
+		console.log(req.params["id"]);
 		if(Validator.result.invalid()) throw new Errors.Errors.UnprocessableEntityError(Validator.result.errors);
-		db.query("SELECT * FROM City WHERE id=?", body.idCity, (err, result)=>{
+		const sql = "UPDATE users SET firstname=?, lastname=?, email=? WHERE id=?;";
+		// const hash = bcrypt.hash(body.password, 10);
+		const values = [
+			body.firstname,
+			body.lastname,
+			body.email,
+			req.params["id"]
+		];
+		db.query(sql, values, (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();
-			if(result.length == 0)	 throw new Errors.Errors.UnprocessableEntityError({idCity: "There is no such city."});
-			const roleId = 2;
-			const sql = "INSERT INTO users(firstname, lastname, email, password, idRole, idCity) VALUES(?, ?, ?, ?, ?, ?);";
-			const hash = bcrypt.hash(body.password, 10);
-			const values = [
-				body.firstname,
-				body.lastname,
-				body.email,
-				hash,
-				roleId,
-				body.idCity
-			];
-			db.query(sql, values, (err, result)=>{
-				if(err) throw new Errors.Errors.InternalServerError();
 
-				return res.sendStatus(201);
-			})
+			return res.sendStatus(204);
 		})
 	}catch(err){
 		return handler.handleError(err, res);
@@ -134,7 +128,7 @@ const router = express.Router();
 
 router.get("/", auth_middleware, get);
 router.get("/:id", auth_middleware, getOne);
-router.post("/", jsonparser, auth_middleware, create);
+router.post("/", jsonparser, create);
 router.put("/:id", auth_middleware, jsonparser, update );
 router.delete("/:id", auth_middleware, deleteRecord);
 module.exports  = router;

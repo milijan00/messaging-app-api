@@ -8,7 +8,7 @@ const getFollowers = (req, res)=>{
 	try{
 		if(base.noParam(req, "id")) throw new Errors.Errors.BadRequestError({id : "User id has to be specified."});
 
-		const sql = `SELECT * FROM users INNER JOIN followers ON users.id=followers.idUser WHERE idUser=?`;
+		const sql = `SELECT users.firstname, users.lastname, users.id FROM users INNER JOIN followers ON users.id=followers.idFollower WHERE idUser=?`;
 		db.query(sql, req.params.id, (err, result)=>{
 			if(err) throw new Errors.Errors.InternalServerError();
 			return res.send(result);
